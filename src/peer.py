@@ -1,4 +1,5 @@
 import socket
+import threading
 
 PORT = 6969
 
@@ -21,3 +22,20 @@ class Peer:
         self.socket.bind((self.host, self.port))
         self.socket.listen(10)
         print(f'Listening for connections on {self.host}:{self.port}')
+
+        while True:
+            connection, address = self.socker.accept()
+            self.connections.append(connection)
+            print(f'Accepted connection form {address}')
+
+
+    def send_data(self, data):
+        for connection in self.connections:
+            try:
+                connection.sendall(data.emcode())
+            except socket.error as e:
+                print(f'Failed to send data. Error: {e}')
+
+    def start(self):
+        listend_thread = threading.Thread(target=self.listen)
+        listend_thread.start()
