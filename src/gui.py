@@ -10,42 +10,54 @@ class Window(ctk.CTk):
         self.geometry("400x550")
         self.resizable(False, False)
         self.init_ui()
+        
 
     def init_ui(self):
 
         # Main GUI frame
         self.ui_frame = ctk.CTkFrame(self, height=520, width=320)
-        self.ui_frame.pack(side='top', expand=True, fill='both', padx=15, pady=15)
+        self.ui_frame.pack(side='top', expand=True, fill='both', pady=15)
         # Canvas
         self.canvas = ctk.CTkCanvas(self.ui_frame, bg='#2b2b2b', bd=0, highlightbackground='#2b2b2b')
         self.canvas.pack(expand=True, padx=15, pady=15, fill='y')
         self.loadImages()
-        self.canvas.bind('<B1-Motion>', self.clickCoords)
 
         # Buttons
         self.give_up = ctk.CTkButton(self.ui_frame, text='Give up', command=self.quit)
         self.give_up.pack(padx=15, pady=15)
 
+        #Grid 
+        row =0
+        column=0
+
+        for i in range(9):
+            id = 'pos' + str(i + 1)
+            self.makeGridButton(row, column, id)
+            if column < 2:
+                column += 1
+            else:
+                column = 0
+                row += 1
 
 
+    def makeGridButton(self, row, column, id):
+        button = ctk.CTkButton(self.canvas, text='', width=80, height=80, image=self.empty, fg_color='transparent', command=lambda: self.test(id))
+        button.grid(row=row, column=column, padx=15, pady=15)
+          
     def loadImages(self):
         self.base = Image.open('assets/base.png').rotate(16)
         self.base = ImageTk.PhotoImage(file='assets/base.png')
 
-        self.canvas.create_image((5, -35), image=self.base, anchor='nw')
-        self.canvas.update()
-
         self.red = ImageTk.PhotoImage(Image.open('assets/red.png'))
         self.blu = ImageTk.PhotoImage(Image.open('assets/blu.png'))
+        self.empty = ImageTk.PhotoImage(Image.open('assets/empty.png'))
 
-    def clickCoords(self, event):
-        x = event.x
-        y = event.y
-        print(f'Click: {x, y}')
 
-    def quit(self) -> None:
+    def quit(self):
         return super().quit()
 
+    def test(self, num):
+        print(f'You pressed {num}')
 
 win = Window()
 win.mainloop()
