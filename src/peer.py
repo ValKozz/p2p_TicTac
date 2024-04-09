@@ -1,8 +1,6 @@
 import socket
 import threading
 
-PORT = 6969
-
 class Peer:
     def __init__(self, host, port):
         self.host = host
@@ -14,7 +12,7 @@ class Peer:
         try:
             connection = self.socket.connect((peer_host, peer_port))
             self.connections.append(connection)
-            print(f'Connected to {peer_host}L{peer_port}')
+            print(f'Connected to {peer_host}:{peer_port}')
         except socket.error as e:
             print(f'Failed to connect to {peer_host}:{peer_port}')
 
@@ -24,7 +22,7 @@ class Peer:
         print(f'Listening for connections on {self.host}:{self.port}')
 
         while True:
-            connection, address = self.socker.accept()
+            connection, address = self.socket.accept()
             self.connections.append(connection)
             print(f'Accepted connection form {address}')
 
