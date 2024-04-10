@@ -3,6 +3,7 @@ from PIL import Image, ImageTk
 
 ctk.set_appearance_mode("Dark")
 
+
 class Window(ctk.CTk):
     def __init__(self) -> None:
         super().__init__()
@@ -29,10 +30,10 @@ class Window(ctk.CTk):
         #Grid 
         row =0
         column=0
-
+        self.button_list = []
         for i in range(9):
-            id = 'pos' + str(i + 1)
-            self.makeGridButton(row, column, id)
+            id = i
+            self.button_list.append(self.makeGridButton(row, column, id))
             if column < 2:
                 column += 1
             else:
@@ -41,8 +42,9 @@ class Window(ctk.CTk):
 
 
     def makeGridButton(self, row, column, id):
-        button = ctk.CTkButton(self.canvas, text='', width=80, height=80, image=self.empty, fg_color='transparent', command=lambda: self.test(id))
+        button = ctk.CTkButton(self.canvas, text='', width=80, height=80, image=self.empty, fg_color='transparent', command=lambda: self.takeGridInput(id))
         button.grid(row=row, column=column, padx=15, pady=15)
+        return {'button': button, 'row': row, 'column': column}
           
     def loadImages(self):
         self.base = Image.open('assets/base.png').rotate(16)
@@ -56,8 +58,17 @@ class Window(ctk.CTk):
     def quit(self):
         return super().quit()
 
-    def test(self, num):
-        print(f'You pressed {num}')
+    def takeGridInput(self, id):
+        print(f'You pressed {id}')
+        button_ref = self.button_list[id]
+        row, column = button_ref['row'], button_ref['column']
+        
+        # Might and Magic
+        # At least this way, once clicked, the button is unclickable
+        # Weird bug traversal where using configure on a button produces an error
+        button_ref['button'] = ctk.CTkButton(self.canvas, text='', width=80, height=80, image=self.blu, fg_color='transparent')
+        button_ref['button'].grid(row=row, column=column, padx=15, pady=15)
+
 
 win = Window()
 win.mainloop()
